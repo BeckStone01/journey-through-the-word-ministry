@@ -1,6 +1,6 @@
-# Journey Through the Word Ministry
+# Beacon Light Bible Church Global Ministries
 
-Netlify-ready one-page static website.
+Netlify-ready one-page static website for Beacon Light Bible Church Global Ministries.
 
 ## Deploy
 
@@ -10,13 +10,11 @@ Upload this folder to Netlify or connect it as the site root:
 journey-through-the-word-ministry-netlify
 ```
 
-The prayer form uses Netlify Forms and will be detected after the first deploy. Giving and privacy content are included on the homepage.
+The prayer form uses Netlify Forms and will be detected after the first deploy. Giving uses the ministry's Pushpay link, and privacy content is included on the homepage.
 
 ## Edit Before Launch
 
-- Confirm the exact ministry name and whether Beacon Light Bible Church Global Ministries should appear in the header or footer.
-- Confirm current Sunday and Tuesday gathering details.
+- Confirm whether the public domain should show Beacon Light Bible Church Global Ministries as the primary name everywhere.
+- Confirm Sunday Zoom access, Tuesday conference call details, and the best public ministry contact number.
 - Confirm the preferred phone number and physical mailing address.
-- Confirm the official online giving provider link for the Give section.
 - Replace stock imagery with real ministry photos when available.
-- Replace the temporary "current meeting details are available" language with exact service time, location, and call-in details.
