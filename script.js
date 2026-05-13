@@ -17,28 +17,33 @@ function closeNav() {
   navToggle.setAttribute("aria-label", "Open navigation");
 }
 
-function scrollToPanel(hash) {
-  if (hash === "#gather") {
-    hash = "#join";
-  }
-
-  if (hash === "#new") {
-    hash = "#home";
-  }
-
+function scrollToPanel(hash, instant = false) {
+  hash = normalizeHash(hash);
   const target = document.querySelector(hash);
 
   if (!target) {
     return;
   }
 
-  const headerHeight = header.getBoundingClientRect().height;
-  const top = target.getBoundingClientRect().top + window.scrollY - headerHeight;
+  const headerHeight = header.offsetHeight || header.getBoundingClientRect().height;
+  const top = hash === "#home" ? 0 : target.offsetTop - headerHeight;
 
   window.scrollTo({
-    top,
-    behavior: reduceMotion.matches ? "auto" : "smooth"
+    top: Math.max(0, Math.round(top)),
+    behavior: instant || reduceMotion.matches ? "auto" : "smooth"
   });
+}
+
+function normalizeHash(hash) {
+  if (hash === "#gather") {
+    return "#join";
+  }
+
+  if (hash === "#new") {
+    return "#home";
+  }
+
+  return hash;
 }
 
 function syncPanels() {
@@ -128,8 +133,9 @@ nav.addEventListener("click", (event) => {
   if (url.pathname === window.location.pathname && url.hash) {
     event.preventDefault();
     closeNav();
-    scrollToPanel(url.hash);
-    history.pushState(null, "", url.hash);
+    const normalizedHash = normalizeHash(url.hash);
+    scrollToPanel(normalizedHash);
+    history.pushState(null, "", normalizedHash);
     requestSync();
     return;
   }
@@ -147,8 +153,9 @@ document.querySelectorAll('a[href^="#"]').forEach((link) => {
 
     if (hash && hash.length > 1) {
       event.preventDefault();
-      scrollToPanel(hash);
-      history.pushState(null, "", hash);
+      const normalizedHash = normalizeHash(hash);
+      scrollToPanel(normalizedHash);
+      history.pushState(null, "", normalizedHash);
       requestSync();
     }
   });
@@ -163,15 +170,29 @@ window.addEventListener("resize", () => {
 });
 reduceMotion.addEventListener("change", requestSync);
 
-if (window.location.hash === "#gather") {
-  history.replaceState(null, "", "#join");
-  scrollToPanel("#join");
+function alignCurrentHash() {
+  if (!window.location.hash) {
+    return;
+  }
+
+  const normalizedHash = normalizeHash(window.location.hash);
+
+  if (normalizedHash !== window.location.hash) {
+    history.replaceState(null, "", normalizedHash);
+  }
+
+  scrollToPanel(normalizedHash, true);
+  requestSync();
 }
 
-if (window.location.hash === "#new") {
-  history.replaceState(null, "", "#home");
-  scrollToPanel("#home");
+if (window.location.hash) {
+  window.requestAnimationFrame(() => {
+    alignCurrentHash();
+  });
+  window.setTimeout(alignCurrentHash, 120);
+  window.addEventListener("load", () => window.setTimeout(alignCurrentHash, 80));
 }
 
+window.addEventListener("hashchange", alignCurrentHash);
 syncHeader();
 syncPanels();

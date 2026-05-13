@@ -1,6 +1,6 @@
 :root {
   --header-height: 74px;
-  --panel-height: calc(100svh - var(--header-height) - 18px);
+  --panel-height: calc(100vh - var(--header-height));
   --ink: #151515;
   --ink-2: #2f3d4a;
   --gold: #f4bd2f;
@@ -13,6 +13,12 @@
   --sky: #dbeaf4;
   --shadow: 0 24px 70px rgba(21, 21, 21, 0.16);
   --radius: 8px;
+}
+
+@supports (height: 100dvh) {
+  :root {
+    --panel-height: calc(100dvh - var(--header-height));
+  }
 }
 
 * {
@@ -35,10 +41,11 @@ body {
   color: var(--ink);
   background: var(--paper);
   font-family: Arial, Helvetica, sans-serif;
+  padding-top: var(--header-height);
 }
 
 main {
-  scroll-snap-type: y proximity;
+  scroll-snap-type: none;
 }
 
 body.nav-open {
@@ -46,7 +53,7 @@ body.nav-open {
 }
 
 .dove-flight {
-  inset: 78px 0 auto;
+  inset: var(--header-height) 0 auto;
   height: 220px;
   overflow: hidden;
   pointer-events: none;
@@ -183,12 +190,10 @@ body.nav-open {
 
 .scroll-panel {
   min-height: var(--panel-height);
-  opacity: calc(0.24 + (var(--panel-progress, 0) * 0.76));
-  scroll-margin-top: var(--header-height);
+  opacity: 1;
+  scroll-margin-top: calc(var(--header-height) + 1px);
   scroll-snap-align: start;
-  transform: translateY(calc((1 - var(--panel-progress, 0)) * 52px)) scale(calc(0.975 + (var(--panel-progress, 0) * 0.025)));
-  transition: opacity 180ms ease-out, transform 210ms ease-out;
-  will-change: opacity, transform;
+  transform: none;
 }
 
 .scroll-panel.panel-active {
@@ -219,18 +224,16 @@ img {
   display: flex;
   justify-content: space-between;
   left: 0;
-  padding: 16px clamp(18px, 4vw, 56px);
+  padding: 12px clamp(18px, 4vw, 56px);
   position: fixed;
   right: 0;
   top: 0;
-  transition: box-shadow 180ms ease, padding 180ms ease;
+  transition: box-shadow 180ms ease;
   z-index: 20;
 }
 
 .site-header.scrolled {
   box-shadow: 0 10px 34px rgba(16, 36, 62, 0.14);
-  padding-bottom: 12px;
-  padding-top: 12px;
 }
 
 .brand {
@@ -246,12 +249,12 @@ img {
   background: var(--ink);
   color: var(--gold-light);
   display: inline-flex;
-  flex: 0 0 42px;
+  flex: 0 0 40px;
   font-size: 1.45rem;
   font-weight: 700;
-  height: 42px;
+  height: 40px;
   justify-content: center;
-  width: 42px;
+  width: 40px;
 }
 
 .brand strong,
@@ -276,9 +279,9 @@ img {
 .site-nav {
   align-items: center;
   display: flex;
-  gap: 26px;
+  gap: clamp(14px, 1.35vw, 24px);
   font-family: Arial, sans-serif;
-  font-size: 0.88rem;
+  font-size: clamp(0.78rem, 0.78vw, 0.88rem);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -328,8 +331,13 @@ img {
 }
 
 .hero {
+  align-items: center;
+  display: grid;
+  gap: clamp(28px, 5vw, 82px);
+  grid-template-columns: minmax(0, 0.94fr) minmax(320px, 0.46fr);
   min-height: var(--panel-height);
   overflow: hidden;
+  padding: clamp(24px, 4vh, 44px) clamp(20px, 6vw, 76px);
   position: relative;
 }
 
@@ -370,8 +378,8 @@ img {
 
 .hero-content {
   color: var(--white);
-  max-width: 650px;
-  padding: clamp(92px, 11vh, 116px) clamp(20px, 6vw, 76px) clamp(70px, 9vh, 92px);
+  max-width: 620px;
+  padding: 0;
   position: relative;
   z-index: 4;
 }
@@ -409,10 +417,10 @@ p {
 
 h1 {
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2.75rem, 4.8vw, 4.55rem);
-  line-height: 1;
-  margin-bottom: 18px;
-  max-width: 640px;
+  font-size: clamp(2rem, 3vw, 3rem);
+  line-height: 0.96;
+  margin-bottom: 14px;
+  max-width: 560px;
 }
 
 .hero h1 {
@@ -441,25 +449,27 @@ p {
 .hero-copy {
   color: rgba(255, 255, 255, 0.88);
   font-family: Arial, sans-serif;
-  font-size: clamp(1rem, 1.35vw, 1.14rem);
-  max-width: 600px;
+  font-size: clamp(0.94rem, 1.12vw, 1.04rem);
+  line-height: 1.42;
+  margin-bottom: 12px;
+  max-width: 560px;
 }
 
 .hero-newcomer {
   color: var(--gold-light);
   font-family: Arial, sans-serif;
-  font-size: 0.94rem;
+  font-size: 0.82rem;
   font-weight: 800;
   letter-spacing: 0.03em;
-  margin-bottom: 0;
-  max-width: 560px;
+  margin: 10px 0 0;
+  max-width: 620px;
 }
 
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
-  margin-top: 24px;
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .button {
@@ -471,8 +481,8 @@ p {
   font-weight: 800;
   justify-content: center;
   letter-spacing: 0.08em;
-  min-height: 44px;
-  padding: 12px 20px;
+  min-height: 38px;
+  padding: 9px 17px;
   text-transform: uppercase;
   transition: transform 160ms ease, background 160ms ease, color 160ms ease;
 }
@@ -505,11 +515,10 @@ p {
 .hero-panel {
   background: rgba(255, 250, 240, 0.94);
   box-shadow: var(--shadow);
-  max-width: 360px;
-  padding: 22px;
-  position: absolute;
-  bottom: clamp(28px, 7vh, 72px);
-  right: clamp(20px, 6vw, 76px);
+  justify-self: end;
+  max-width: 342px;
+  padding: 18px;
+  position: relative;
   z-index: 5;
 }
 
@@ -554,13 +563,14 @@ p {
 .intro-grid {
   align-items: center;
   display: grid;
-  gap: clamp(26px, 4vw, 44px);
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.82fr);
+  gap: clamp(18px, 2.8vw, 34px);
+  grid-template-columns: minmax(0, 0.95fr) minmax(280px, 0.72fr);
+  grid-template-rows: auto auto;
 }
 
 .intro h2 {
   font-size: clamp(1.9rem, 3.15vw, 3.45rem);
-  margin-bottom: 0;
+  margin-bottom: clamp(14px, 2vh, 22px);
 }
 
 .intro-copy p {
@@ -570,6 +580,102 @@ p {
 
 .intro-copy {
   font-family: Arial, sans-serif;
+}
+
+.welcome-points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: clamp(14px, 2.2vh, 22px);
+}
+
+.welcome-points span {
+  background: rgba(244, 189, 47, 0.18);
+  border: 1px solid rgba(244, 189, 47, 0.38);
+  color: #49340a;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  padding: 9px 11px;
+  text-transform: uppercase;
+}
+
+.welcome-photo {
+  align-self: stretch;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  grid-row: span 2;
+  margin: 0;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.welcome-photo::after {
+  background: linear-gradient(180deg, transparent 28%, rgba(0, 0, 0, 0.68) 100%);
+  content: "";
+  inset: 0;
+  position: absolute;
+}
+
+.welcome-photo img {
+  height: 100%;
+  object-fit: cover;
+  object-position: 40% 42%;
+  width: 100%;
+}
+
+.welcome-photo figcaption {
+  bottom: 0;
+  color: var(--white);
+  left: 0;
+  padding: clamp(18px, 2.4vw, 28px);
+  position: absolute;
+  right: 0;
+  z-index: 1;
+}
+
+.welcome-photo figcaption span,
+.welcome-note span {
+  color: var(--gold-light);
+  display: block;
+  font-family: Arial, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.welcome-photo figcaption strong {
+  display: block;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.2rem, 2vw, 1.65rem);
+  line-height: 1.05;
+}
+
+.welcome-note {
+  background: var(--ink);
+  color: var(--white);
+  max-width: 620px;
+  padding: clamp(18px, 2.6vw, 28px);
+}
+
+.welcome-note p {
+  color: rgba(255, 255, 255, 0.82);
+  font-family: Arial, sans-serif;
+  font-size: clamp(0.9rem, 1vw, 1rem);
+  line-height: 1.45;
+  margin-bottom: 12px;
+}
+
+.welcome-note a {
+  color: var(--gold-light);
+  font-family: Arial, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .new-here {
@@ -811,6 +917,121 @@ p {
   line-height: 1.42;
 }
 
+.just-for-you {
+  align-content: start;
+  background:
+    linear-gradient(90deg, rgba(21, 21, 21, 0.86) 0%, rgba(21, 21, 21, 0.58) 48%, rgba(21, 21, 21, 0.22) 100%),
+    url("images/outreach-teaching.jpg") center / cover no-repeat;
+  color: var(--white);
+  display: grid;
+  gap: clamp(12px, 2vh, 22px);
+  grid-template-columns: 1fr;
+  overflow: visible;
+}
+
+.just-for-you .eyebrow {
+  color: var(--gold-light);
+}
+
+.just-for-you-intro {
+  align-items: end;
+  display: grid;
+  gap: clamp(14px, 2.2vw, 30px);
+  grid-template-columns: minmax(0, 0.98fr) minmax(280px, 0.52fr);
+  max-width: 1220px;
+}
+
+.just-for-you h2 {
+  font-size: clamp(1.45rem, 2.55vw, 2.75rem);
+  line-height: 0.98;
+  margin-bottom: 8px;
+}
+
+.just-for-you-intro > p {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: clamp(0.9rem, 1.02vw, 1rem);
+  line-height: 1.3;
+  max-width: 780px;
+}
+
+.scripture-card {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.12);
+  border-left: 4px solid var(--gold);
+  margin-top: 0;
+  padding: clamp(12px, 1.35vw, 18px);
+}
+
+.scripture-card strong {
+  color: var(--gold-light);
+  display: block;
+  font-family: Arial, sans-serif;
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.scripture-card p {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: clamp(0.72rem, 0.82vw, 0.84rem);
+  line-height: 1.26;
+  margin: 0;
+}
+
+.just-for-you-grid {
+  display: grid;
+  gap: clamp(9px, 1vw, 14px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.just-for-you-grid article {
+  background: rgba(255, 250, 240, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius);
+  color: var(--ink);
+  min-height: 0;
+  padding: clamp(11px, 1.15vw, 16px);
+}
+
+.just-for-you-grid span {
+  color: var(--clay);
+  display: block;
+  font-family: Arial, sans-serif;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.just-for-you-grid h3 {
+  font-size: clamp(0.9rem, 1.05vw, 1.08rem);
+  line-height: 1.05;
+  margin-bottom: 6px;
+}
+
+.just-for-you-grid p,
+.just-for-you-grid strong {
+  font-family: Arial, sans-serif;
+  font-size: clamp(0.7rem, 0.78vw, 0.82rem);
+  line-height: 1.22;
+}
+
+.just-for-you-grid p {
+  margin-bottom: 7px;
+}
+
+.just-for-you-grid strong {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.app-card,
+.facebook-card {
+  background: rgba(255, 225, 139, 0.95) !important;
+}
+
 .outreach {
   background: var(--paper);
   display: flex;
@@ -824,7 +1045,7 @@ p {
   flex-direction: column;
   justify-content: center;
   gap: clamp(8px, 1.4vh, 14px);
-  overflow: hidden;
+  overflow: visible;
   padding-bottom: clamp(12px, 2vh, 22px);
   padding-top: clamp(12px, 2vh, 22px);
 }
@@ -1057,10 +1278,12 @@ textarea {
 
 .give-section {
   align-items: center;
-  background: var(--paper);
+  background:
+    radial-gradient(circle at 18% 18%, rgba(244, 189, 47, 0.18), transparent 30%),
+    linear-gradient(135deg, #fffaf0 0%, #f2eee5 100%);
   display: grid;
-  gap: clamp(28px, 5vw, 64px);
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.42fr);
+  gap: clamp(24px, 4.5vw, 58px);
+  grid-template-columns: minmax(0, 0.88fr) minmax(300px, 0.58fr);
 }
 
 .give-copy {
@@ -1072,11 +1295,84 @@ textarea {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.giving-note {
-  background: var(--sky);
-  border-left: 4px solid var(--gold);
+.giving-impact {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: clamp(18px, 2.8vh, 28px) 0 clamp(16px, 2.4vh, 24px);
+  max-width: 720px;
+}
+
+.giving-impact span {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(21, 21, 21, 0.1);
+  border-top: 4px solid var(--gold);
+  box-shadow: 0 14px 34px rgba(21, 21, 21, 0.07);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  padding: 16px 14px;
+  text-transform: uppercase;
+}
+
+.giving-visual {
   border-radius: var(--radius);
-  padding: 26px;
+  box-shadow: var(--shadow);
+  min-height: 390px;
+  overflow: hidden;
+  position: relative;
+}
+
+.giving-visual::after {
+  background:
+    linear-gradient(180deg, transparent 20%, rgba(0, 0, 0, 0.72) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.22), transparent 55%);
+  content: "";
+  inset: 0;
+  position: absolute;
+}
+
+.giving-visual img {
+  height: 100%;
+  object-fit: cover;
+  object-position: 44% 48%;
+  width: 100%;
+}
+
+.giving-note {
+  bottom: 0;
+  color: var(--white);
+  left: 0;
+  padding: clamp(18px, 2.4vw, 28px);
+  position: absolute;
+  right: 0;
+  z-index: 1;
+}
+
+.giving-note span {
+  color: var(--gold-light);
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.giving-note h3 {
+  color: var(--white);
+  font-size: clamp(1.25rem, 2vw, 1.8rem);
+  margin-bottom: 8px;
+}
+
+.giving-note p {
+  color: rgba(255, 255, 255, 0.84);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.42;
+  margin-bottom: 0;
 }
 
 .privacy-section {
@@ -1183,7 +1479,7 @@ textarea {
 }
 
 .subpage .site-header {
-  position: sticky;
+  position: fixed;
 }
 
 .subpage-nav {
@@ -1245,7 +1541,7 @@ textarea {
 
 @media (min-width: 901px) {
   h1 {
-    font-size: clamp(2.7rem, 4.25vw, 4.15rem);
+    font-size: clamp(2rem, 3vw, 3.05rem);
   }
 
   p {
@@ -1253,14 +1549,16 @@ textarea {
   }
 
   .hero {
+    display: grid;
+    padding: clamp(16px, 2.6vh, 30px) clamp(20px, 6vw, 76px);
     height: var(--panel-height);
     min-height: var(--panel-height);
   }
 
   .hero-content {
-    max-width: 620px;
-    padding-bottom: clamp(44px, 6vh, 70px);
-    padding-top: clamp(82px, 9vh, 104px);
+    max-width: 580px;
+    padding: 0;
+    transform: translateY(-16px);
   }
 
   .hero-copy {
@@ -1270,21 +1568,21 @@ textarea {
   }
 
   .hero-newcomer {
-    font-size: 0.86rem;
+    font-size: 0.8rem;
+    margin-top: 9px;
   }
 
   .hero-actions {
     gap: 10px;
-    margin-top: 18px;
+    margin-top: 14px;
   }
 
   .button {
-    min-height: 40px;
-    padding: 10px 18px;
+    min-height: 38px;
+    padding: 9px 17px;
   }
 
   .hero-panel {
-    bottom: clamp(18px, 4vh, 40px);
     max-width: 340px;
     padding: 18px;
   }
@@ -1298,9 +1596,9 @@ textarea {
   .verse-band.scroll-panel,
   .pathways.scroll-panel,
   .split.scroll-panel {
-    height: var(--panel-height);
+    height: auto;
     min-height: var(--panel-height);
-    overflow: hidden;
+    overflow: visible;
   }
 
   .section.scroll-panel {
@@ -1314,13 +1612,14 @@ textarea {
   }
 
   .intro,
+  .just-for-you,
   .outreach,
   .resources,
   .prayer,
   .give-section,
   .contact,
   .privacy-section {
-    align-content: center;
+    align-content: start;
   }
 
   .intro h2,
@@ -1352,6 +1651,14 @@ textarea {
 
   .intro-grid {
     gap: clamp(22px, 3vw, 36px);
+  }
+
+  .welcome-photo {
+    height: clamp(260px, 38vh, 380px);
+  }
+
+  .welcome-note {
+    align-self: start;
   }
 
   .pathways article {
@@ -1399,6 +1706,26 @@ textarea {
   .info-list span {
     font-size: clamp(0.86rem, 0.98vw, 0.96rem);
     line-height: 1.32;
+  }
+
+  .just-for-you {
+    gap: clamp(20px, 2.4vw, 34px);
+  }
+
+  .just-for-you h2 {
+    font-size: clamp(1.5rem, 2.45vw, 2.7rem);
+  }
+
+  .just-for-you-grid {
+    gap: 9px;
+  }
+
+  .just-for-you-grid article {
+    padding: clamp(10px, 1vw, 14px);
+  }
+
+  .scripture-card {
+    padding: clamp(10px, 1vw, 14px);
   }
 
   .resources {
@@ -1483,8 +1810,16 @@ textarea {
     gap: clamp(22px, 4vw, 52px);
   }
 
-  .giving-note,
+  .giving-visual {
+    height: clamp(330px, 45vh, 430px);
+    min-height: 0;
+  }
+
   .contact-card {
+    padding: clamp(20px, 3vw, 32px);
+  }
+
+  .giving-note {
     padding: clamp(20px, 3vw, 32px);
   }
 
@@ -1543,29 +1878,65 @@ textarea {
   }
 
   .hero {
+    display: block;
     min-height: auto;
+    padding: 0;
   }
 
   .hero-content {
     max-width: 620px;
-    padding-bottom: 240px;
-    padding-top: 132px;
+    padding-bottom: 220px;
+    padding-top: 118px;
   }
 
   .hero-panel {
     bottom: 24px;
     left: 20px;
     max-width: none;
+    position: absolute;
     right: 20px;
   }
 
   .intro-grid,
   .new-layout,
+  .just-for-you,
   .split,
   .prayer,
   .contact,
   .give-section {
     grid-template-columns: 1fr;
+  }
+
+  .giving-impact {
+    grid-template-columns: 1fr;
+  }
+
+  .giving-visual {
+    min-height: 340px;
+  }
+
+  .just-for-you {
+    background:
+      linear-gradient(rgba(21, 21, 21, 0.78), rgba(21, 21, 21, 0.62)),
+      url("images/outreach-teaching.jpg") center / cover no-repeat;
+  }
+
+  .just-for-you-intro {
+    display: block;
+    max-width: none;
+  }
+
+  .scripture-card {
+    margin-top: 18px;
+  }
+
+  .intro-grid {
+    grid-template-rows: auto;
+  }
+
+  .welcome-photo {
+    grid-row: auto;
+    min-height: 320px;
   }
 
   .new-photo {
@@ -1574,6 +1945,7 @@ textarea {
 
   .pathways,
   .book-grid,
+  .just-for-you-grid,
   .outreach-showcase,
   .new-steps,
   .privacy-grid {
