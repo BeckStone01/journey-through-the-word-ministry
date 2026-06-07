@@ -19,7 +19,7 @@
     <link rel="preconnect" href="https://unsplash.com" />
     <link rel="preconnect" href="https://images.unsplash.com" />
     <link rel="preconnect" href="https://images.pexels.com" />
-    <link rel="stylesheet" href="styles.css?v=20260513-layout3" />
+    <link rel="stylesheet" href="styles.css?v=20260607-form1" />
   </head>
   <body>
     <div class="dove-flight" aria-hidden="true">
@@ -291,10 +291,10 @@
             request will be received with care.
           </p>
         </div>
-        <form class="prayer-form" name="prayer-request" method="POST" action="/thank-you.html" data-netlify="true" netlify-honeypot="bot-field">
-          <input type="hidden" name="form-name" value="prayer-request" />
-          <p class="hidden">
-            <label>Do not fill this out: <input name="bot-field" /></label>
+              <form class="prayer-form" id="prayer-request-form" name="prayer-request" method="POST" action="/" data-netlify="true" netlify-honeypot="bot-field" aria-describedby="prayer-form-status">
+                <input type="hidden" name="form-name" value="prayer-request" />
+                <p class="hidden">
+                  <label>Do not fill this out: <input name="bot-field" /></label>
           </p>
           <label>
             Name
@@ -304,12 +304,13 @@
             Email
             <input type="email" name="email" autocomplete="email" required />
           </label>
-          <label>
-            Prayer Request
-            <textarea name="message" rows="5" required></textarea>
-          </label>
-          <button class="button button-primary" type="submit">Send Prayer Request</button>
-        </form>
+                <label>
+                  Prayer Request
+                  <textarea name="message" rows="5" required></textarea>
+                </label>
+                <button class="button button-primary" type="submit">Send Prayer Request</button>
+                <p class="form-status" id="prayer-form-status" data-form-status role="status" aria-live="polite" hidden></p>
+              </form>
       </section>
 
       <section class="section give-section scroll-panel" id="give">

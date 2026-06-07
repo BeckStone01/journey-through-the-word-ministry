@@ -1,6 +1,18 @@
 [build]
   publish = "."
 
+[[redirects]]
+  from = "/thank-you.html"
+  to = "/#prayer"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/thank-you"
+  to = "/#prayer"
+  status = 302
+  force = true
+
 [[headers]]
   for = "/*"
   [headers.values]

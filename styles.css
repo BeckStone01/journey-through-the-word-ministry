@@ -2060,3 +2060,27 @@ textarea {
       linear-gradient(0deg, rgba(21, 21, 21, 0.52) 0%, transparent 42%);
   }
 }
+.form-status {
+  margin: 1rem 0 0;
+  padding: 0.85rem 1rem;
+  border-left: 4px solid #f6c22d;
+  background: rgba(255, 255, 255, 0.86);
+  color: #1b1b1b;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.form-status.is-success {
+  border-color: #2f7d4f;
+  background: #edf8f1;
+}
+
+.form-status.is-error {
+  border-color: #b94132;
+  background: #fff0ed;
+}
+
+.prayer-form button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}

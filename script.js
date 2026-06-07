@@ -193,6 +193,61 @@ if (window.location.hash) {
   window.addEventListener("load", () => window.setTimeout(alignCurrentHash, 80));
 }
 
+const prayerForm = document.querySelector('form[name="prayer-request"]');
+
+if (prayerForm) {
+  const status = prayerForm.querySelector("[data-form-status]");
+  const submitButton = prayerForm.querySelector('button[type="submit"]');
+
+  prayerForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const originalLabel = submitButton ? submitButton.textContent : "";
+    const formData = new FormData(prayerForm);
+    formData.set("form-name", prayerForm.getAttribute("name") || "prayer-request");
+
+    if (status) {
+      status.hidden = false;
+      status.classList.remove("is-success", "is-error");
+      status.textContent = "Sending your prayer request...";
+    }
+
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = "Sending...";
+    }
+
+    try {
+      const response = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(formData).toString()
+      });
+
+      if (!response.ok) {
+        throw new Error("Prayer request submission failed");
+      }
+
+      prayerForm.reset();
+
+      if (status) {
+        status.classList.add("is-success");
+        status.textContent = "Thank you. Your prayer request has been received, and our ministry team will pray with care.";
+      }
+    } catch (error) {
+      if (status) {
+        status.classList.add("is-error");
+        status.textContent = "This form did not send. Please email BeaconLightChurch@journeythroughthewordministry.org so we can receive your prayer request.";
+      }
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = originalLabel;
+      }
+    }
+  });
+}
+
 window.addEventListener("hashchange", alignCurrentHash);
 syncHeader();
 syncPanels();
