@@ -193,61 +193,23 @@ if (window.location.hash) {
   window.addEventListener("load", () => window.setTimeout(alignCurrentHash, 80));
 }
 
-const prayerForm = document.querySelector('form[name="prayer-request"]');
+const prayerStatus = document.querySelector("[data-form-status]");
 
-if (prayerForm) {
-  const status = prayerForm.querySelector("[data-form-status]");
-  const submitButton = prayerForm.querySelector('button[type="submit"]');
+function showPrayerSuccessIfNeeded() {
+  const params = new URLSearchParams(window.location.search);
 
-  prayerForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
+  if (params.get("success") !== "prayer" || !prayerStatus) {
+    return;
+  }
 
-    const originalLabel = submitButton ? submitButton.textContent : "";
-    const formData = new FormData(prayerForm);
-    formData.set("form-name", prayerForm.getAttribute("name") || "prayer-request");
-
-    if (status) {
-      status.hidden = false;
-      status.classList.remove("is-success", "is-error");
-      status.textContent = "Sending your prayer request...";
-    }
-
-    if (submitButton) {
-      submitButton.disabled = true;
-      submitButton.textContent = "Sending...";
-    }
-
-    try {
-      const response = await fetch("/", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(formData).toString()
-      });
-
-      if (!response.ok) {
-        throw new Error("Prayer request submission failed");
-      }
-
-      prayerForm.reset();
-
-      if (status) {
-        status.classList.add("is-success");
-        status.textContent = "Thank you. Your prayer request has been received, and our ministry team will pray with care.";
-      }
-    } catch (error) {
-      if (status) {
-        status.classList.add("is-error");
-        status.textContent = "This form did not send. Please email BeaconLightChurch@journeythroughthewordministry.org so we can receive your prayer request.";
-      }
-    } finally {
-      if (submitButton) {
-        submitButton.disabled = false;
-        submitButton.textContent = originalLabel;
-      }
-    }
-  });
+  prayerStatus.hidden = false;
+  prayerStatus.classList.remove("is-error");
+  prayerStatus.classList.add("is-success");
+  prayerStatus.textContent = "Thank you. Your prayer request has been received, and our ministry team will pray with care.";
+  history.replaceState(null, "", "#prayer");
 }
 
 window.addEventListener("hashchange", alignCurrentHash);
+showPrayerSuccessIfNeeded();
 syncHeader();
 syncPanels();

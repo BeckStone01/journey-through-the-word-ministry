@@ -19,10 +19,18 @@
     <link rel="preconnect" href="https://unsplash.com" />
     <link rel="preconnect" href="https://images.unsplash.com" />
     <link rel="preconnect" href="https://images.pexels.com" />
-    <link rel="stylesheet" href="styles.css?v=20260607-form1" />
-  </head>
-  <body>
-    <div class="dove-flight" aria-hidden="true">
+  <link rel="stylesheet" href="styles.css?v=20260607-form1" />
+</head>
+<body>
+  <form name="prayer-request" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="prayer-request" />
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <textarea name="message"></textarea>
+    <input name="bot-field" />
+  </form>
+
+  <div class="dove-flight" aria-hidden="true">
       <span class="dove dove-1"></span>
       <span class="dove dove-2"></span>
       <span class="dove dove-3"></span>
@@ -291,7 +299,7 @@
             request will be received with care.
           </p>
         </div>
-              <form class="prayer-form" id="prayer-request-form" name="prayer-request" method="POST" action="/" data-netlify="true" netlify-honeypot="bot-field" aria-describedby="prayer-form-status">
+        <form class="prayer-form" id="prayer-request-form" name="prayer-request" method="POST" action="/?success=prayer#prayer" data-netlify="true" netlify-honeypot="bot-field" aria-describedby="prayer-form-status">
                 <input type="hidden" name="form-name" value="prayer-request" />
                 <p class="hidden">
                   <label>Do not fill this out: <input name="bot-field" /></label>
@@ -388,6 +396,6 @@
       </nav>
     </footer>
 
-    <script src="script.js?v=20260513-layout3"></script>
-  </body>
+  <script src="script.js?v=20260607-form2"></script>
+</body>
 </html>
