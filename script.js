@@ -194,22 +194,101 @@ if (window.location.hash) {
 }
 
 const prayerStatus = document.querySelector("[data-form-status]");
+const prayerForm = document.querySelector("#prayer-request-form");
 
-function showPrayerSuccessIfNeeded() {
-  const params = new URLSearchParams(window.location.search);
-
-  if (params.get("success") !== "prayer" || !prayerStatus) {
+function setPrayerStatus(message, type) {
+  if (!prayerStatus) {
     return;
   }
 
   prayerStatus.hidden = false;
-  prayerStatus.classList.remove("is-error");
-  prayerStatus.classList.add("is-success");
-  prayerStatus.textContent = "Thank you. Your prayer request has been received, and our ministry team will pray with care.";
-  history.replaceState(null, "", "#prayer");
+  prayerStatus.classList.remove("is-error", "is-success");
+
+  if (type) {
+    prayerStatus.classList.add(type);
+  }
+
+  prayerStatus.textContent = message;
+}
+
+function encodeFormData(formData) {
+  return new URLSearchParams(formData).toString();
+}
+
+function isLocalPreview() {
+  return window.location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(window.location.hostname);
+}
+
+const localPrayerPreviewMessage =
+  "Local test successful: this form is ready for Netlify. On the live website, prayer requests will send through the ministry website.";
+
+if (prayerForm && prayerStatus) {
+  prayerForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const submitButton = prayerForm.querySelector('button[type="submit"]');
+    const originalButtonText = submitButton ? submitButton.textContent : "";
+    const formData = new FormData(prayerForm);
+    formData.set("form-name", prayerForm.getAttribute("name") || "prayer-request");
+
+    setPrayerStatus("Sending your prayer request...", "");
+
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = "Sending...";
+    }
+
+    if (isLocalPreview()) {
+      prayerForm.reset();
+      setPrayerStatus(localPrayerPreviewMessage, "is-success");
+      history.replaceState(null, "", "#prayer");
+
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = originalButtonText || "Send Prayer Request";
+      }
+
+      return;
+    }
+
+    try {
+      const response = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: encodeFormData(formData)
+      });
+
+      if (!response.ok) {
+        throw new Error("Prayer request form did not submit.");
+      }
+
+      prayerForm.reset();
+      setPrayerStatus(
+        "Thank you. Your prayer request has been received, and our ministry team will pray with care.",
+        "is-success"
+      );
+      history.replaceState(null, "", "#prayer");
+    } catch (error) {
+      if (isLocalPreview()) {
+        prayerForm.reset();
+        setPrayerStatus(localPrayerPreviewMessage, "is-success");
+        history.replaceState(null, "", "#prayer");
+        return;
+      }
+
+      prayerStatus.hidden = false;
+      prayerStatus.classList.remove("is-success");
+      prayerStatus.classList.add("is-error");
+      prayerStatus.innerHTML = 'This form did not send. Please email <a href="mailto:BeaconLightChurch@journeythroughthewordministry.org">BeaconLightChurch@journeythroughthewordministry.org</a> so we can receive your prayer request.';
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = originalButtonText || "Send Prayer Request";
+      }
+    }
+  });
 }
 
 window.addEventListener("hashchange", alignCurrentHash);
-showPrayerSuccessIfNeeded();
 syncHeader();
 syncPanels();
