@@ -220,7 +220,13 @@ const localPrayerPreviewMessage =
 const prayerSuccessMessage =
   "Thank you. Your prayer request has been received, and our ministry team will pray with care.";
 const prayerErrorMessage =
-  "We could not send your prayer request just now. Please try again in a moment.";
+  "We could not send your prayer request just now. Please email beyondsundayjourney@gmail.com or try again later.";
+
+function getPrayerRequestBody() {
+  const formData = new FormData(prayerForm);
+  formData.set("form-name", prayerForm.getAttribute("name"));
+  return new URLSearchParams(formData).toString();
+}
 
 if (prayerForm && prayerStatus) {
   const params = new URLSearchParams(window.location.search);
@@ -240,11 +246,13 @@ if (prayerForm && prayerStatus) {
 
     try {
       if (!isLocalPreview()) {
-        const body = new URLSearchParams(new FormData(prayerForm)).toString();
-        const response = await fetch(prayerForm.action || "/", {
+        const response = await fetch("/", {
           method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: getPrayerRequestBody()
         });
 
         if (!response.ok) {
