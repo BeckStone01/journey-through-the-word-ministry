@@ -219,6 +219,8 @@ const localPrayerPreviewMessage =
   "Local test successful: this form is ready for Netlify. On the live website, prayer requests will send through the ministry website.";
 const prayerSuccessMessage =
   "Thank you. Your prayer request has been received, and our ministry team will pray with care.";
+const prayerErrorMessage =
+  "We could not send your prayer request just now. Please try again in a moment.";
 
 if (prayerForm && prayerStatus) {
   const params = new URLSearchParams(window.location.search);
@@ -228,15 +230,38 @@ if (prayerForm && prayerStatus) {
     history.replaceState(null, "", `${window.location.pathname}#prayer`);
   }
 
-  prayerForm.addEventListener("submit", (event) => {
-    if (!isLocalPreview()) {
-      return;
+  prayerForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const submitButton = prayerForm.querySelector("button[type='submit']");
+
+    if (submitButton) {
+      submitButton.disabled = true;
     }
 
-    event.preventDefault();
-    prayerForm.reset();
-    setPrayerStatus(localPrayerPreviewMessage, "is-success");
-    history.replaceState(null, "", "#prayer");
+    try {
+      if (!isLocalPreview()) {
+        const body = new URLSearchParams(new FormData(prayerForm)).toString();
+        const response = await fetch(prayerForm.action || "/", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body
+        });
+
+        if (!response.ok) {
+          throw new Error("Prayer request failed");
+        }
+      }
+
+      prayerForm.reset();
+      setPrayerStatus(isLocalPreview() ? localPrayerPreviewMessage : prayerSuccessMessage, "is-success");
+      history.replaceState(null, "", "#prayer");
+    } catch (error) {
+      setPrayerStatus(prayerErrorMessage, "is-error");
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+      }
+    }
   });
 }
 

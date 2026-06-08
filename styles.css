@@ -2084,3 +2084,26 @@ textarea {
   opacity: 0.65;
   cursor: wait;
 }
+
+@media (max-width: 680px) {
+  .form-status {
+    border: 1px solid rgba(47, 125, 79, 0.28);
+    border-left-width: 6px;
+    border-radius: 8px;
+    box-shadow: 0 10px 24px rgba(16, 36, 62, 0.14);
+    font-size: 0.98rem;
+    line-height: 1.55;
+    margin-top: 0.35rem;
+    padding: 1rem;
+  }
+
+  .form-status.is-success {
+    background: #ffffff;
+    color: #173521;
+  }
+
+  .form-status.is-error {
+    background: #ffffff;
+    color: #5d2018;
+  }
+}
